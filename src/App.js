@@ -1,24 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
-
+import PageRoutes from "../src/pageroutes/pageroutes";
+import PublicRoutes from "../src/pageroutes/publicroutes";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useSelector, useDispatch } from "react-redux";
+import { login } from "./features/user";
+import { useEffect } from "react";
+import { localStorageUrl } from "./constants";
 function App() {
+  //var isLogged = false;
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user.value);
+  useEffect(() => {
+    if (localStorage[localStorageUrl]) {
+      dispatch(login({ isLogged: true, email: localStorage[localStorageUrl] }));
+    }
+  }, []);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <ToastContainer
+        position="bottom-left"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
+      {!user.isLogged ? <PublicRoutes /> : <PageRoutes />}
+    </>
   );
 }
 
